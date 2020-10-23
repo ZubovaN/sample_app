@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
-  #collback (hook)
+  #callback (hook)
   before_save { self.email = email.downcase }
 
 
@@ -13,6 +13,12 @@ class User < ActiveRecord::Base
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
 
-  validates :password, length: {minimum: 6}, allow_nil: true
   has_secure_password
+  validates :password, length: {minimum: 6}, allow_nil: true
+
+  def User.digest(string)
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+               BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost)
+  end
 end
