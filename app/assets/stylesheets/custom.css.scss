@@ -167,6 +167,17 @@ input {
   height: auto !important;
 }
 
+input[type="checkbox"] {
+  width: auto;
+  margin-left: 0 !important;
+  position: relative !important;
+}
+
+.checkbox span {
+  margin-left: 10px;
+  font-weight: normal;
+}
+
 #error_explanation {
   color: red;
 
@@ -181,4 +192,8 @@ input {
   .from-control{
     color: $state-danger-text;
   }
+}
+
+.sign-up-block {
+  margin-top: 20px;
 }

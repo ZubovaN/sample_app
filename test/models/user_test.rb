@@ -64,4 +64,8 @@ class UserTest < ActiveSupport::TestCase
     @user.password = @user.password_confirmation = "a" * 5
     assert @user.invalid?
   end
+
+  test "" do
+    assert_not @user.authenticated?('')
+  end
 end
