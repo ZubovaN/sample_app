@@ -2,6 +2,7 @@
 @import "bootstrap";
 
 $light-gray: #777;
+$gray-lighter: #eaeaea;
 
 @mixin box_sizing {
   -moz-box-sizing: border-box;
@@ -196,4 +197,17 @@ input[type="checkbox"] {
 
 .sign-up-block {
   margin-top: 20px;
+}
+
+/*------------------- All users page ------------------*/
+
+.users {
+  list-style: none;
+  margin: 0;
+
+  li {
+    overflow: auto;
+    padding: 10px 0;
+    border-bottom: 1px solid $gray-lighter;
+  }
 }

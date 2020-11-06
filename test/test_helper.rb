@@ -13,6 +13,7 @@ class ActiveSupport::TestCase
     !session[:user_id].nil?
   end
 
+  # логиним юзера для тестов
   def log_in_as(user, options = {})
     password = options[:password] || 'password'
     remember_me = options[:remember_me] || '1'
