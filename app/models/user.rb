@@ -1,15 +1,15 @@
 class User < ActiveRecord::Base
-  attr_accessor :remember_token
+  attr_accessor :remember_token, :activation_token
+
+  before_save :downcase_email
+  before_create :create_activation_digest
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-
-  #callback (hook)
-  before_save { self.email = email.downcase }
-
 
   validates :name, length: { maximum: 50, minimum: 2 }
 
   validates :email, presence: true
+
   validates :email, allow_blank: true,
                     length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
@@ -42,8 +42,33 @@ class User < ActiveRecord::Base
   end
 
   # сравниваем дайджест токена, который в бд, с токеном который пришел из куки
-  def authenticated?(remember_token)
-    return false if remember_digest.blank?
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")
+
+    return false if digest.blank?
+    BCrypt::Password.new(digest).is_password?(token)
+  end
+
+  # Активирует учетную запись.
+  def activate
+    update_attribute(:activated, true)
+    update_attribute(:activated_at, Time.zone.now)
+  end
+
+  # Посылает письмо со ссылкой на страницу активации.
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now
+  end
+
+  private
+
+  def downcase_email
+    self.email = email.downcase
+  end
+
+  # создаем токен и дайджест для подтверждения эмеила
+  def create_activation_digest
+    self.activation_token = User.new_token
+    self.activation_digest = User.digest(activation_token)
   end
 end
